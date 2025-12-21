@@ -1,0 +1,1449 @@
+repeat task.wait() until game:IsLoaded()
+
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('CoreGui')
+
+local PlayerGui = Players.LocalPlayer.PlayerGui
+
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+local RunService = game:GetService('RunService')
+
+local Ts = game:GetService('TweenService')
+local Info = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+
+local UserInputService = game:GetService('UserInputService')
+local HttpService = game:GetService('HttpService')
+
+local Library = {
+    Flags = {}
+}
+
+if not isfolder('Click') then
+    makefolder('Click')
+end
+
+function Library:save_flags()
+    local flags = HttpService:JSONEncode(Library.Flags)
+
+    writefile('Click/' .. game.GameId .. '.lua', flags)
+end
+
+function Library:load_flags()
+    if not isfile('Click/' .. game.GameId .. '.lua') then 
+        Library.save_flags()
+        return
+    end
+
+    local flags = readfile('Click/' .. game.GameId .. '.lua')
+
+    if not flags then 
+        Library.save_flags()
+        return
+    end
+
+    Library.Flags = HttpService:JSONDecode(flags)
+end
+
+Library.load_flags()
+
+function Library:Drag(v)
+	v.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			self.Dragging = true
+			self.DragStart = input.Position
+			self.StartPosition = v.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					self.Dragging = false
+				end
+			end)
+		end
+	end)
+
+	v.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if self.Dragging then
+				local delta = input.Position - self.DragStart
+				v.Position = UDim2.new(self.StartPosition.X.Scale, self.StartPosition.X.Offset + delta.X, self.StartPosition.Y.Scale, self.StartPosition.Y.Offset + delta.Y)
+			end
+		end
+	end)
+end
+
+Library["1"] = Instance.new("ScreenGui", (RunService:IsStudio() and PlayerGui) or CoreGui);
+Library["1"]["Name"] = [[Mobile_Gui]];
+Library["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+Library["2"] = Instance.new("TextButton", Library["1"]);
+Library["2"]["BorderSizePixel"] = 0;
+Library["2"]["Modal"] = false; -- set to true to break shiftlock
+Library["2"]["AutoButtonColor"] = false;
+Library["2"]["TextSize"] = 14;
+Library["2"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+Library["2"]["BackgroundColor3"] = Color3.fromRGB(28, 29, 34);
+Library["2"]["FontFace"] = Font.new([[rbxasset://fonts/families/Montserrat.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+Library["2"]["Size"] = UDim2.new(0, 122, 0, 38);
+Library["2"]["Name"] = [[Mobile]];
+Library["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+Library["2"]["Text"] = [[]];
+Library["2"]["Position"] = UDim2.new(0.021, -4, 0.918, -5);
+
+Library["3"] = Instance.new("UICorner", Library["2"]);
+Library["3"]["CornerRadius"] = UDim.new(0, 13);
+
+
+Library["4"] = Instance.new("ImageLabel", Library["2"]);
+Library["4"]["ZIndex"] = 0;
+Library["4"]["BorderSizePixel"] = 0;
+Library["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+Library["4"]["ImageTransparency"] = 0.2;
+Library["4"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+Library["4"]["Image"] = [[rbxassetid://17183270335]];
+Library["4"]["Size"] = UDim2.new(0, 144, 0, 58);
+Library["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+Library["4"]["BackgroundTransparency"] = 1;
+Library["4"]["Name"] = [[Shadow]];
+Library["4"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+
+Library["5"] = Instance.new("ImageLabel", Library["2"]);
+Library["5"]["BorderSizePixel"] = 0;
+Library["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+Library["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+Library["5"]["Image"] = [[rbxassetid://10709810463]];
+Library["5"]["Size"] = UDim2.new(0, 15, 0, 15);
+Library["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+Library["5"]["BackgroundTransparency"] = 1;
+Library["5"]["Name"] = [[Icon]];
+Library["5"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+--Library:Drag(Library["2"])
+
+function Library:Tween(object, goal, callback)
+	local Tween = Ts:Create(object, Info, goal)
+
+	Tween.Completed:Connect(callback or function() end)
+	Tween:Play()
+end
+
+function Library.Add_Window(Title)
+	local Gui = {}
+
+	Gui["1"] = Instance.new("ScreenGui", (RunService:IsStudio() and PlayerGui) or CoreGui);
+	Gui["1"]["Name"] = [[Stream]];
+	Gui["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+	Gui["2"] = Instance.new("Frame", Gui["1"]);
+	Gui["2"]["Active"] = true;
+	Gui["2"]["BorderSizePixel"] = 0;
+	Gui["2"]["BackgroundColor3"] = Color3.fromRGB(14, 14, 14);
+	Gui["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	Gui["2"]["Size"] = UDim2.new(0, 640, 0, 355);
+	Gui["2"]["Position"] = UDim2.new(0.5, 0, 0.4935, 0);
+	Gui["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["2"]["Name"] = [[Container]];
+	Gui["2"]["BackgroundTransparency"] = 0.1;
+
+	Gui["93"] = Instance.new("UIScale", Gui["2"]);
+
+	Gui["3"] = Instance.new("Frame", Gui["2"]);
+	Gui["3"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	Gui["3"]["Size"] = UDim2.new(0.95, 0, 0.95, 0);
+	Gui["3"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+	Gui["3"]["BackgroundTransparency"] = 1;
+
+	Gui["4"] = Instance.new("UICorner", Gui["2"]);
+	Gui["4"]["CornerRadius"] = UDim.new(0, 10);
+
+	Gui["5"] = Instance.new("Frame", Gui["2"]);
+	Gui["5"]["BorderSizePixel"] = 0;
+	Gui["5"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+	Gui["5"]["Size"] = UDim2.new(0, 624, 0, 24);
+	Gui["5"]["Position"] = UDim2.new(0.0125, 0, 0.02254, 0);
+	Gui["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["5"]["Name"] = [[Header]];
+	Gui["5"]["BackgroundTransparency"] = 0.5;
+
+	Gui["6"] = Instance.new("UICorner", Gui["5"]);
+	Gui["6"]["CornerRadius"] = UDim.new(0, 5);
+
+	Gui["7"] = Instance.new("TextLabel", Gui["5"]);
+	Gui["7"]["TextWrapped"] = true;
+	Gui["7"]["BorderSizePixel"] = 0;
+	Gui["7"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+	Gui["7"]["TextScaled"] = true;
+	Gui["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["7"]["TextSize"] = 14;
+	Gui["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+	Gui["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["7"]["BackgroundTransparency"] = 1;
+	Gui["7"]["AnchorPoint"] = Vector2.new(0, 0.5);
+	Gui["7"]["Size"] = UDim2.new(0, 78, 0, 12);
+	Gui["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["7"]["Text"] = Title
+	Gui["7"]["Name"] = [[Client]];
+	Gui["7"]["Position"] = UDim2.new(0.044, 0, 0.5, 0);
+
+	Gui["8"] = Instance.new("UITextSizeConstraint", Gui["7"]);
+	Gui["8"]["MaxTextSize"] = 12;
+	Gui["8"]["MinTextSize"] = 12;
+
+	Gui["9"] = Instance.new("Frame", Gui["5"]);
+	Gui["9"]["BorderSizePixel"] = 0;
+	Gui["9"]["BackgroundColor3"] = Color3.fromRGB(34, 34, 34);
+	Gui["9"]["AnchorPoint"] = Vector2.new(1, 0.5);
+	Gui["9"]["Size"] = UDim2.new(0, 64, 0, 17);
+	Gui["9"]["Position"] = UDim2.new(0.995, 0, 0.5, 0);
+	Gui["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["9"]["Name"] = [[SearchBar]];
+	Gui["9"]["BackgroundTransparency"] = 0.5;
+
+	Gui["a"] = Instance.new("UICorner", Gui["9"]);
+	Gui["a"]["CornerRadius"] = UDim.new(0, 4);
+
+	Gui["b"] = Instance.new("TextBox", Gui["9"]);
+	Gui["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["b"]["PlaceholderColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["b"]["BorderSizePixel"] = 0;
+	Gui["b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+	Gui["b"]["TextWrapped"] = true;
+	Gui["b"]["TextTransparency"] = 0.5;
+	Gui["b"]["TextSize"] = 10;
+	Gui["b"]["Name"] = [[Input]];
+	Gui["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+	Gui["b"]["AnchorPoint"] = Vector2.new(0, 0.5);
+	Gui["b"]["ClearTextOnFocus"] = false;
+	Gui["b"]["PlaceholderText"] = [[Search]];
+	Gui["b"]["Size"] = UDim2.new(0, 39, 0, 14);
+	Gui["b"]["Position"] = UDim2.new(0, 0, 0.5, 0);
+	Gui["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["b"]["Text"] = [[]];
+	Gui["b"]["BackgroundTransparency"] = 1;
+
+	Gui["c"] = Instance.new("UITextSizeConstraint", Gui["b"]);
+	Gui["c"]["MaxTextSize"] = 10;
+	Gui["c"]["MinTextSize"] = 10;
+
+	Gui["d"] = Instance.new("UIPadding", Gui["9"]);
+	Gui["d"]["PaddingLeft"] = UDim.new(0, 9);
+
+	Gui["e"] = Instance.new("ImageLabel", Gui["9"]);
+	Gui["e"]["BorderSizePixel"] = 0;
+	Gui["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["e"]["AnchorPoint"] = Vector2.new(1, 0.5);
+	Gui["e"]["Image"] = [[rbxassetid://72131122316767]];
+	Gui["e"]["Size"] = UDim2.new(0, 17, 0, 17);
+	Gui["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["e"]["BackgroundTransparency"] = 1;
+	Gui["e"]["Name"] = [[IconBG]];
+	Gui["e"]["Position"] = UDim2.new(1, 0, 0.5, 0);
+
+	Gui["f"] = Instance.new("ImageLabel", Gui["e"]);
+	Gui["f"]["BorderSizePixel"] = 0;
+	Gui["f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	Gui["f"]["Image"] = [[rbxassetid://79243925523770]];
+	Gui["f"]["Size"] = UDim2.new(0, 9, 0, 9);
+	Gui["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["f"]["BackgroundTransparency"] = 1;
+	Gui["f"]["Name"] = [[Icon]];
+	Gui["f"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+	Gui["10"] = Instance.new("ScrollingFrame", Gui["2"]);
+	Gui["10"]["Active"] = true;
+	Gui["10"]["BorderSizePixel"] = 0;
+	Gui["10"]["CanvasSize"] = UDim2.new(0, 0, 0.5, 0);
+	Gui["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	Gui["10"]["Name"] = [[Tabs]];
+	Gui["10"]["ScrollBarImageTransparency"] = 1;
+	Gui["10"]["AutomaticCanvasSize"] = Enum.AutomaticSize.X;
+	Gui["10"]["Size"] = UDim2.new(0, 138, 0, 308);
+	Gui["10"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["10"]["Position"] = UDim2.new(0.0125, 0, 0.10986, 0);
+	Gui["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	Gui["10"]["ScrollBarThickness"] = 0;
+	Gui["10"]["BackgroundTransparency"] = 1;
+
+	Gui["11"] = Instance.new("UIListLayout", Gui["10"]);
+	Gui["11"]["Padding"] = UDim.new(0, 6);
+	Gui["11"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+	Library:Drag(Gui['2'])
+
+	local Tween_Time = 0.65
+
+	Library['2'].InputBegan:Connect(function(input, gpe)
+		if gpe then
+			return
+		end
+
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if Gui['1'].Enabled then
+				local Tween_Out = Ts:Create(Gui["93"], TweenInfo.new(Tween_Time, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), {
+					Scale = 0.01
+				})
+
+				Tween_Out:Play()
+				Tween_Out.Completed:Wait()
+
+				Gui['1'].Enabled = false
+			else
+				Gui['1'].Enabled = true
+
+				Gui["93"].Scale = 0.01
+
+				local Tween_In = Ts:Create(Gui["93"], TweenInfo.new(Tween_Time, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), {
+					Scale = 1
+				})
+
+				Tween_In:Play()
+			end
+		end
+	end)
+
+	Library['2'].TouchTap:Connect(function()
+		if Gui['1'].Enabled then
+			local Tween_Out = Ts:Create(Gui["93"], TweenInfo.new(Tween_Time, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), {
+				Scale = 0.01
+			})
+
+			Tween_Out:Play()
+			Tween_Out.Completed:Wait()
+
+			Gui['1'].Enabled = false
+		else
+			Gui['1'].Enabled = true
+
+			Gui["93"].Scale = 0.01
+
+			local Tween_In = Ts:Create(Gui["93"], TweenInfo.new(Tween_Time, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), {
+				Scale = 1
+			})
+
+			Tween_In:Play()
+		end
+	end)
+
+	function Gui.Create_Tab(options)
+		local Tab = {
+
+			Current_Tab = nil,
+
+			Hover = false,
+			Active = false
+		}
+
+		Tab["12"] = Instance.new("TextButton", Gui['10']);
+		Tab["12"]["BorderSizePixel"] = 0;
+		Tab["12"]["AutoButtonColor"] = false;
+		Tab["12"]["TextSize"] = 14;
+		Tab["12"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+		Tab["12"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+		Tab["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+		Tab["12"]["Size"] = UDim2.new(0, 138, 0, 27);
+		Tab["12"]["BackgroundTransparency"] = 1;
+		Tab["12"]["Name"] = [[Tab]];
+		Tab["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		Tab["12"]["Text"] = [[]];
+
+		Tab["13"] = Instance.new("UICorner", Tab["12"]);
+		Tab["13"]["CornerRadius"] = UDim.new(0, 5);
+
+		Tab["14"] = Instance.new("ImageLabel", Tab["12"]);
+		Tab["14"]["BorderSizePixel"] = 0;
+		Tab["14"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		Tab["14"]["AnchorPoint"] = Vector2.new(0, 0.5);
+		Tab["14"]["Image"] = options.icon;
+		Tab["14"]["Size"] = UDim2.new(0, 12, 0, 12);
+		Tab["14"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		Tab["14"]["BackgroundTransparency"] = 1;
+		Tab["14"]["Name"] = [[Icon]];
+		Tab["14"]["Position"] = UDim2.new(0.1, 0, 0.5, 0);
+		Tab['14']['ImageTransparency'] = 0.6
+
+		Tab["15"] = Instance.new("TextLabel", Tab["12"]);
+		Tab["15"]["TextWrapped"] = true;
+		Tab["15"]["BorderSizePixel"] = 0;
+		Tab["15"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+		Tab["15"]["TextScaled"] = true;
+		Tab["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		Tab["15"]["TextSize"] = 14;
+		Tab["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Italic);
+		Tab["15"]["TextColor3"] = Color3.fromRGB(200, 200, 200);
+		Tab["15"]["BackgroundTransparency"] = 1;
+		Tab["15"]["AnchorPoint"] = Vector2.new(0, 0.5);
+		Tab["15"]["Size"] = UDim2.new(0, 75, 0, 12);
+		Tab["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		Tab["15"]["Text"] = options.name;
+		Tab["15"]["Name"] = [[Title]];
+		Tab["15"]["Position"] = UDim2.new(0.225, 0, 0.5, 0);
+
+		Tab["16"] = Instance.new("UITextSizeConstraint", Tab["15"]);
+		Tab["16"]["MaxTextSize"] = 12;
+		Tab["16"]["MinTextSize"] = 12;
+
+		function Tab:Activate()
+			if not Tab.Active then
+				if Gui.CurrentTab ~= nil then
+					Gui.CurrentTab:Deactivate()
+				end
+
+				Tab.Active = true
+				Gui.CurrentTab = Tab
+
+				Tab['12']['BackgroundTransparency'] = 0.5
+				Tab['15']['TextTransparency'] = 0
+
+				Tab['14']['ImageTransparency'] = 0
+
+			end
+		end
+
+		function Tab:Deactivate()
+			if Tab.Active then
+				Tab.Active = false
+				Tab.Hover = false
+
+				Tab['12']['BackgroundTransparency'] = 1
+				Tab['15']['TextTransparency'] = 0.6
+
+				Tab['14']['ImageTransparency'] = 0.6
+			end
+		end
+
+		Tab['12'].MouseButton1Click:Connect(function()
+			Tab:Activate()
+		end)
+
+		function Tab.Create_Section()
+			local Section = {}
+
+			Section["21"] = Instance.new("Folder", Gui["2"]);
+			Section["21"]["Name"] = [[Sections]];
+
+			Section["58"] = Instance.new("ScrollingFrame", Section["21"]);
+			Section["58"]["Active"] = true;
+			Section["58"]["BorderSizePixel"] = 0;
+			Section["58"]["CanvasSize"] = UDim2.new(0, 0, 0.5, 0);
+			Section["58"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+			Section["58"]["Name"] = [[LeftSection]];
+			Section["58"]["ScrollBarImageTransparency"] = 1;
+			Section["58"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+			Section["58"]["Size"] = UDim2.new(0, 237, 0, 306);
+			Section["58"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+			Section["58"]["Position"] = UDim2.new(0.24, 0, 0.11, 0);
+
+			Section["58"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+			Section["58"]["ScrollBarThickness"] = 0;
+			Section["58"]["BackgroundTransparency"] = 1;
+
+			Section["59"] = Instance.new("UIListLayout", Section["58"]);
+			Section["59"]["Padding"] = UDim.new(0, 6);
+
+			Section["60"] = Instance.new("ScrollingFrame", Section["21"]);
+			Section["60"]["Active"] = true;
+			Section["60"]["BorderSizePixel"] = 0;
+			Section["60"]["CanvasSize"] = UDim2.new(0, 0, 0.5, 0);
+			Section["60"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+			Section["60"]["Name"] = [[RightSection]];
+			Section["60"]["ScrollBarImageTransparency"] = 1;
+			Section["60"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+			Section["60"]["Size"] = UDim2.new(0, 237, 0, 306);
+			Section["60"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+			Section["60"]["Position"] = UDim2.new(0.62, 0, 0.11, 0);
+
+			Section["60"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+			Section["60"]["ScrollBarThickness"] = 0;
+			Section["60"]["BackgroundTransparency"] = 1;
+
+			Section["61"] = Instance.new("UIListLayout", Section["60"]);
+			Section["61"]["Padding"] = UDim.new(0, 6);
+
+			-- หา Section 2
+
+			local Container = Gui["2"]
+			local Index = 0
+
+			for _, v in pairs(Container:GetChildren()) do
+				if v:IsA('Folder') and v.Name == 'Sections' then
+					Index = Index + 1
+
+					if Index >= 2 then
+						for _, child in pairs(v:GetChildren()) do
+							if child:IsA('ScrollingFrame') then
+								child.Visible = false
+							end
+						end
+					end
+				end
+			end
+
+			Tab['12'].InputBegan:Connect(function(input, gpe)
+				if gpe then
+					return
+				end
+
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					for _, folder in pairs(Gui["2"]:GetChildren()) do
+						if folder:IsA('Folder') and folder.Name == 'Sections' then
+							for _, section in pairs(folder:GetChildren()) do
+								if section:IsA('ScrollingFrame') then
+									section.Visible = false
+								end
+							end
+						end
+					end
+
+					Section['58'].Visible = true
+					Section['60'].Visible = true
+				end
+			end)
+
+			function Section.Create_Toggle(options)
+
+				local Toggle = {
+					State = false,
+                    flag = options.flag
+				}
+
+				local Target_Section
+
+				if options.section == 'left' then
+					Target_Section = Section["58"]
+				else
+					Target_Section = Section["60"]
+				end
+
+				Toggle["5a"] = Instance.new("Frame", Target_Section);
+				Toggle["5a"]["BorderSizePixel"] = 0;
+				Toggle["5a"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 27);
+				Toggle["5a"]["ClipsDescendants"] = true;
+				Toggle["5a"]["Size"] = UDim2.new(0, 237, 0, 28);
+
+				Toggle["5a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["5a"]["Name"] = [[Module]];
+				Toggle["5a"]["BackgroundTransparency"] = 0.5;
+
+				Toggle["5b"] = Instance.new("UICorner", Toggle["5a"]);
+				Toggle["5b"]["CornerRadius"] = UDim.new(0, 5);
+
+				Toggle["88"] = Instance.new("ImageButton", Toggle["5a"])
+				Toggle["88"]["BorderSizePixel"] = 0;
+				Toggle["88"]["ImageTransparency"] = 1;
+				Toggle["88"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["88"]["Image"] = [[rbxassetid://85806357619289]];
+				Toggle["88"]["Size"] = UDim2.new(0, 237, 0, 28);
+				Toggle["88"]["BackgroundTransparency"] = 1;
+				Toggle["88"]["Name"] = [[Header]];
+				Toggle["88"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+
+				Toggle["89"] = Instance.new("ImageLabel", Toggle["88"]);
+				Toggle["89"]["BorderSizePixel"] = 0;
+				Toggle["89"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["89"]["ImageTransparency"] = 0.5;
+				Toggle["89"]["Image"] = [[rbxassetid://119990362562133]];
+				Toggle["89"]["Size"] = UDim2.new(0, 11, 0, 11);
+				Toggle["89"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["89"]["BackgroundTransparency"] = 1;
+				Toggle["89"]["Rotation"] = 0;
+				Toggle["89"]["Name"] = [[Arrow]];
+				Toggle["89"]["Position"] = UDim2.new(0.9, 0, 0.286, 0);
+
+				Toggle["8a"] = Instance.new("TextButton", Toggle["88"]);
+				Toggle["8a"]["BorderSizePixel"] = 0;
+				Toggle["8a"]["AutoButtonColor"] = false;
+				Toggle["8a"]["TextSize"] = 14;
+				Toggle["8a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["8a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["8a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+				Toggle["8a"]["AnchorPoint"] = Vector2.new(0, 0.5);
+				Toggle["8a"]["Size"] = UDim2.new(0, 33, 0, 28);
+				Toggle["8a"]["BackgroundTransparency"] = 1;
+				Toggle["8a"]["Name"] = [[Keybind]];
+				Toggle["8a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["8a"]["Text"] = [[]];
+				Toggle["8a"]["Position"] = UDim2.new(0, 0, 0.5, 0);
+
+				Toggle["8b"] = Instance.new("Frame", Toggle["8a"]);
+				Toggle["8b"]["BorderSizePixel"] = 0;
+				Toggle["8b"]["BackgroundColor3"] = Color3.fromRGB(63, 63, 63);
+				Toggle["8b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["8b"]["Size"] = UDim2.new(0, 20, 0, 20);
+				Toggle["8b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+				Toggle["8b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["8b"]["Name"] = [[Background]];
+				Toggle["8b"]["BackgroundTransparency"] = 0.5;
+
+				Toggle["8c"] = Instance.new("UICorner", Toggle["8b"]);
+				Toggle["8c"]["CornerRadius"] = UDim.new(0, 4);
+
+				Toggle["8d"] = Instance.new("TextLabel", Toggle["8b"]);
+				Toggle["8d"]["BorderSizePixel"] = 0;
+				Toggle["8d"]["TextTransparency"] = 0.5;
+				Toggle["8d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["8d"]["TextSize"] = 10;
+				Toggle["8d"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+				Toggle["8d"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["8d"]["BackgroundTransparency"] = 1;
+				Toggle["8d"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["8d"]["Size"] = UDim2.new(0, 12, 0, 12);
+				Toggle["8d"]["Visible"] = false;
+				Toggle["8d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["8d"]["Text"] = [[R]];
+				Toggle["8d"]["Name"] = [[String]];
+				Toggle["8d"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Toggle["8e"] = Instance.new("UITextSizeConstraint", Toggle["8d"]);
+				Toggle["8e"]["MaxTextSize"] = 11;
+				Toggle["8e"]["MinTextSize"] = 11;
+
+				Toggle["8f"] = Instance.new("ImageLabel", Toggle["8b"]);
+				Toggle["8f"]["BorderSizePixel"] = 0;
+				Toggle["8f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["8f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["8f"]["Image"] = [[rbxassetid://114520037763143]];
+				Toggle["8f"]["Size"] = UDim2.new(0, 10, 0, 10);
+				Toggle["8f"]["Visible"] = false;
+				Toggle["8f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["8f"]["BackgroundTransparency"] = 1;
+				Toggle["8f"]["Name"] = [[Delete]];
+				Toggle["8f"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Toggle["90"] = Instance.new("ImageLabel", Toggle["8b"]);
+				Toggle["90"]["BorderSizePixel"] = 0;
+				Toggle["90"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["90"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["90"]["Image"] = [[rbxassetid://10734887784]];
+				Toggle["90"]["Size"] = UDim2.new(0, 10, 0, 10);
+				Toggle["90"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["90"]["BackgroundTransparency"] = 1;
+				Toggle["90"]["Name"] = [[Edit]];
+				Toggle["90"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Toggle["91"] = Instance.new("TextLabel", Toggle["8a"]);
+				Toggle["91"]["TextWrapped"] = true;
+				Toggle["91"]["BorderSizePixel"] = 0;
+				Toggle["91"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Toggle["91"]["TextTransparency"] = 0.5;
+				Toggle["91"]["TextScaled"] = true;
+				Toggle["91"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["91"]["TextSize"] = 14;
+				Toggle["91"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+				Toggle["91"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["91"]["BackgroundTransparency"] = 1;
+				Toggle["91"]["AnchorPoint"] = Vector2.new(0, 0.5);
+				Toggle["91"]["Size"] = UDim2.new(0, 156, 0, 12);
+				Toggle["91"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Toggle["91"]["Text"] = options.name;
+				Toggle["91"]["Name"] = [[Title]];
+				Toggle["91"]["Position"] = UDim2.new(1, 0, 0.5, 0);
+
+                if Library.Flags[Toggle.flag] then
+                    local Background_Tween = Ts:Create(Toggle["88"], TweenInfo.new(0.2), { ImageTransparency = 0.5 })
+                        Background_Tween:Play()
+                    else
+                        local Background_Tween = Ts:Create(Toggle["88"], TweenInfo.new(0.2), { ImageTransparency = 1 })
+                        Background_Tween:Play()
+                    end
+
+                function Toggle:Toggle(state)
+                    if Library.Flags[self.flag] == nil then
+                        Library.Flags[self.flag] = false
+                    end
+
+                    if state == nil then
+                        Library.Flags[self.flag] = not Library.Flags[self.flag]
+                    else
+                        Library.Flags[self.flag] = state
+                    end
+
+                    Library.save_flags()
+                    options.callback(Library.Flags[self.flag])
+                end
+
+                if Library.Flags[Toggle.flag] == nil then
+                    Library.Flags[Toggle.flag] = false
+                end
+
+                Toggle:Toggle(Library.Flags[Toggle.flag])
+
+                Toggle['88'].InputBegan:Connect(function(input, gpe)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        if Toggle['88'].ImageTransparency == 1 then
+
+                            local Background_Tween = Ts:Create(Toggle["88"], TweenInfo.new(0.2), { ImageTransparency = 0.5 })
+                            Background_Tween:Play()
+                        else
+                            local Background_Tween = Ts:Create(Toggle["88"], TweenInfo.new(0.2), { ImageTransparency = 1 })
+                            Background_Tween:Play()
+                        end
+
+                        Toggle:Toggle()
+                    end
+                end)
+
+                Toggle['88'].TouchTap:Connect(function()
+                    Toggle:Toggle()
+                end)
+            end
+
+			function Section.Create_DropToggle(options)
+
+				local Module = {
+					Selected_Option = '',
+					State = false
+				}
+
+                Module.flag = options.flag
+                Module.flag2 = options.flag2
+
+				local Target_Section
+
+				if options.section == 'left' then
+					Target_Section = Section["58"]
+				else
+					Target_Section = Section["60"]
+				end
+
+				Module["5a"] = Instance.new("Frame", Target_Section);
+				Module["5a"]["BorderSizePixel"] = 0;
+				Module["5a"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 27);
+				Module["5a"]["ClipsDescendants"] = true;
+				Module["5a"]["Size"] = UDim2.new(0, 237, 0, 28);
+
+				Module["5a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["5a"]["Name"] = [[Module]];
+				Module["5a"]["BackgroundTransparency"] = 0.5;
+
+				Module["5b"] = Instance.new("UICorner", Module["5a"]);
+				Module["5b"]["CornerRadius"] = UDim.new(0, 5);
+
+				Module["5c"] = Instance.new("Frame", Module["5a"]);
+				Module["5c"]["BorderSizePixel"] = 0;
+				Module["5c"]["BackgroundColor3"] = Color3.fromRGB(28, 28, 28);
+				Module["5c"]["AnchorPoint"] = Vector2.new(0, 1);
+				Module["5c"]["ClipsDescendants"] = true;
+				Module["5c"]["Size"] = UDim2.new(0, 237, 0, 0);
+				Module["5c"]["Position"] = UDim2.new(0, 0, 1, 0);
+				Module["5c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["5c"]["Name"] = [[Settings]];
+				Module["5c"]["BackgroundTransparency"] = 1;
+
+				Module["5d"] = Instance.new("UIListLayout", Module["5c"]);
+				Module["5d"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+				Module["5d"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
+				Module["5d"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+				Module["5e"] = Instance.new("TextButton", Module["5c"]);
+				Module["5e"]["BorderSizePixel"] = 0;
+				Module["5e"]["AutoButtonColor"] = false;
+				Module["5e"]["TextSize"] = 14;
+				Module["5e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["5e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["5e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+				Module["5e"]["Size"] = UDim2.new(0, 216, 0, 127);
+				Module["5e"]["BackgroundTransparency"] = 1;
+				Module["5e"]["Name"] = [[Dropdown]];
+				Module["5e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["5e"]["Text"] = [[]];
+
+				Module["5f"] = Instance.new("UIPadding", Module["5e"]);
+				Module["5f"]["PaddingTop"] = UDim.new(0, 3);
+
+				Module["60"] = Instance.new("TextLabel", Module["5e"]);
+				Module["60"]["TextWrapped"] = true;
+				Module["60"]["BorderSizePixel"] = 0;
+				Module["60"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Module["60"]["TextTransparency"] = 0.5;
+				Module["60"]["TextScaled"] = true;
+				Module["60"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["60"]["TextSize"] = 14;
+				Module["60"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+				Module["60"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["60"]["BackgroundTransparency"] = 1;
+				Module["60"]["Size"] = UDim2.new(0, 215, 0, 12);
+				Module["60"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["60"]["Text"] = [[]];
+				Module["60"]["Name"] = [[Title]];
+
+				Module["61"] = Instance.new("UITextSizeConstraint", Module["60"]);
+				Module["61"]["MaxTextSize"] = 12;
+				Module["61"]["MinTextSize"] = 12;
+
+				Module["62"] = Instance.new("Frame", Module["60"]);
+				Module["62"]["BorderSizePixel"] = 0;
+				Module["62"]["BackgroundColor3"] = Color3.fromRGB(49, 49, 49);
+				Module["62"]["AnchorPoint"] = Vector2.new(0.5, 0);
+				Module["62"]["Size"] = UDim2.new(0, 218, 0, 18);
+				Module["62"]["Position"] = UDim2.new(0.5, 0, 1.3, 0);
+				Module["62"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["62"]["Name"] = [[Box]];
+				Module["62"]["BackgroundTransparency"] = 1;
+
+				Module["63"] = Instance.new("UICorner", Module["62"]);
+				Module["63"]["CornerRadius"] = UDim.new(0, 5);
+
+				Module["64"] = Instance.new("Frame", Module["62"]);
+				Module["64"]["BorderSizePixel"] = 0;
+				Module["64"]["BackgroundColor3"] = Color3.fromRGB(36, 36, 36);
+				Module["64"]["AnchorPoint"] = Vector2.new(0.5, 0);
+				Module["64"]["ClipsDescendants"] = true;
+				Module["64"]["Size"] = UDim2.new(0, 218, 0, 0);
+				--Module["64"]["Position"] = UDim2.new(0.5, 0, 1.1, 0);
+				--Module['64']['Position'] = UDim2.new(0.5, 0, 0.5, 17)
+
+				Module['64']['Position'] = UDim2.new(0.5, 0, 0.5, 4)
+
+				Module["64"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["64"]["Name"] = [[Options]];
+				Module["64"]["BackgroundTransparency"] = 1;
+
+				Module["76"] = Instance.new("Frame", Module["64"]);
+				Module["76"]["BorderSizePixel"] = 0;
+				Module["76"]["BackgroundColor3"] = Color3.fromRGB(36, 36, 36);
+				Module["76"]["Size"] = UDim2.new(0, 218, 0, 89);
+				Module["76"]["Position"] = UDim2.new(0, 0, -0.05, 0);
+				Module["76"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["76"]["Name"] = [[Fill]];
+				Module["76"]["BackgroundTransparency"] = 0.5;
+
+				Module["77"] = Instance.new("ImageLabel", Module["76"]);
+				Module["77"]["BorderSizePixel"] = 0;
+				Module["77"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["77"]["ImageTransparency"] = 0.5;
+				Module["77"]["Image"] = [[rbxassetid://135267619427964]];
+				Module["77"]["Size"] = UDim2.new(0, 218, 0, 10);
+				Module["77"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["77"]["BackgroundTransparency"] = 1;
+				Module["77"]["Name"] = [[Corner]];
+				Module["77"]["Position"] = UDim2.new(0, 0, 1, 0);
+
+				Module["65"] = Instance.new("ScrollingFrame", Module["64"]);
+				Module["65"]["Active"] = true;
+				Module["65"]["BorderSizePixel"] = 0;
+				Module["65"]["CanvasSize"] = UDim2.new(0, 0, 0.5, 0);
+				Module["65"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["65"]["Name"] = [[List]];
+				Module["65"]["ScrollBarImageTransparency"] = 1;
+				Module["65"]["AnchorPoint"] = Vector2.new(0.5, 0);
+				Module["65"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY;
+				Module["65"]["Size"] = UDim2.new(0, 218, 0, 85);
+				Module["65"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["65"]["Position"] = UDim2.new(0.5, 0, 0, 0);
+				Module["65"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["65"]["ScrollBarThickness"] = 0;
+				Module["65"]["BackgroundTransparency"] = 1;
+
+				Module["66"] = Instance.new("UIListLayout", Module["65"]);
+				Module["66"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+
+                function Module:Select_Option(option)
+                    if option == nil or option == "" or not table.find(options.options, option) then
+                        Module.Selected_Option = options.options[1]
+                    else
+                        Module.Selected_Option = option
+                    end
+
+                    Library.Flags[Module.flag2] = Module.Selected_Option
+                    options.callback2(Module.Selected_Option)
+
+                    Library.save_flags()
+                end
+
+                Module:Select_Option(Library.Flags[Module.flag2])
+
+				for _, option in pairs(options.options) do
+					local Option_Button = Instance.new("TextButton", Module["65"])
+					Option_Button.BorderSizePixel = 0
+					Option_Button.TextXAlignment = Enum.TextXAlignment.Left
+					Option_Button.TextTransparency = 0.5
+					Option_Button.TextSize = 12
+					Option_Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+					Option_Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					Option_Button.FontFace = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+					Option_Button.ZIndex = 2
+					Option_Button.Size = UDim2.new(0, 205, 0, 17)
+					Option_Button.BackgroundTransparency = 1
+					Option_Button.Name = "Option"
+					Option_Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					Option_Button.Text = option
+
+					if option == Library.Flags[Module.flag2] then
+						Option_Button.TextTransparency = 0
+						Option_Button.TextStrokeTransparency = 0.86
+					end
+
+					Option_Button.MouseButton1Click:Connect(function()
+						for _, v in pairs(Module["65"]:GetChildren()) do
+							if v:IsA("TextButton") then
+								v.TextTransparency = 0.5
+								v.TextStrokeTransparency = 1
+							end
+						end
+
+						Option_Button.TextTransparency = 0
+						Option_Button.TextStrokeTransparency = 0.86
+
+						Module:Select_Option(option)
+						Module["7a"]["Text"] = Module.Selected_Option
+					end)
+				end
+
+				Module["69"] = Instance.new("UIGradient", Module["67"]);
+				Module["69"]["Transparency"] = NumberSequence.new{NumberSequenceKeypoint.new(0.000, 0),NumberSequenceKeypoint.new(0.758, 0),NumberSequenceKeypoint.new(0.930, 0.26875),NumberSequenceKeypoint.new(1.000, 1)};
+
+				Module["68"] = Instance.new("UITextSizeConstraint", Module["67"]);
+				Module["68"]["MaxTextSize"] = 12;
+				Module["68"]["MinTextSize"] = 12;
+
+				Module["78"] = Instance.new("ImageButton", Module["62"]);
+				Module["78"]["BorderSizePixel"] = 0;
+				Module["78"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["78"]["Image"] = [[rbxassetid://101868605252082]];
+				Module["78"]["Size"] = UDim2.new(0, 218, 0, 18);
+				Module["78"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["78"]["BackgroundTransparency"] = 1;
+				Module["78"]["Name"] = [[Header]];
+				Module["78"]["Position"] = UDim2.new(0, 0, -2, 20);
+
+				Module["79"] = Instance.new("ImageLabel", Module["78"]);
+				Module["79"]["BorderSizePixel"] = 0;
+				Module["79"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["79"]["ImageTransparency"] = 0.5;
+				Module["79"]["Image"] = [[rbxassetid://119990362562133]];
+				Module["79"]["Size"] = UDim2.new(0, 10, 0, 10);
+				Module["79"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["79"]["BackgroundTransparency"] = 1;
+				Module["79"]["Rotation"] = 0;
+				Module["79"]["Name"] = [[Arrow]];
+				Module["79"]["Position"] = UDim2.new(0.93, 0, 0.25, 0);
+
+				Module["7a"] = Instance.new("TextLabel", Module["78"]);
+				Module["7a"]["BorderSizePixel"] = 0;
+				Module["7a"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Module["7a"]["TextTransparency"] = 0.5;
+				Module["7a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["7a"]["TextSize"] = 12;
+				Module["7a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+				Module["7a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["7a"]["BackgroundTransparency"] = 1;
+				Module["7a"]["AnchorPoint"] = Vector2.new(0.5, 0);
+				Module["7a"]["Size"] = UDim2.new(0, 194, 0, 12);
+				Module["7a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["7a"]["Text"] = 'Custom'
+				Module["7a"]["Name"] = [[Option]];
+				Module["7a"]["Position"] = UDim2.new(0.5, 0, 0.1, 0);
+
+				Module["7a"]["Text"] = Module.Selected_Option
+
+				Module["88"] = Instance.new("ImageButton", Module["5a"])
+				Module["88"]["BorderSizePixel"] = 0;
+				Module["88"]["ImageTransparency"] = 1;
+				Module["88"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["88"]["Image"] = [[rbxassetid://85806357619289]];
+				Module["88"]["Size"] = UDim2.new(0, 237, 0, 28);
+				Module["88"]["BackgroundTransparency"] = 1;
+				Module["88"]["Name"] = [[Header]];
+				Module["88"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+
+				Module["89"] = Instance.new("ImageLabel", Module["88"]);
+				Module["89"]["BorderSizePixel"] = 0;
+				Module["89"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["89"]["ImageTransparency"] = 0.5;
+				Module["89"]["Image"] = [[rbxassetid://119990362562133]];
+				Module["89"]["Size"] = UDim2.new(0, 11, 0, 11);
+				Module["89"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["89"]["BackgroundTransparency"] = 1;
+				Module["89"]["Rotation"] = 0;
+				Module["89"]["Name"] = [[Arrow]];
+				Module["89"]["Position"] = UDim2.new(0.9, 0, 0.286, 0);
+
+				Module["8a"] = Instance.new("TextButton", Module["88"]);
+				Module["8a"]["BorderSizePixel"] = 0;
+				Module["8a"]["AutoButtonColor"] = false;
+				Module["8a"]["TextSize"] = 14;
+				Module["8a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["8a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["8a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+				Module["8a"]["AnchorPoint"] = Vector2.new(0, 0.5);
+				Module["8a"]["Size"] = UDim2.new(0, 33, 0, 28);
+				Module["8a"]["BackgroundTransparency"] = 1;
+				Module["8a"]["Name"] = [[Keybind]];
+				Module["8a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["8a"]["Text"] = [[]];
+				Module["8a"]["Position"] = UDim2.new(0, 0, 0.5, 0);
+
+				Module["8b"] = Instance.new("Frame", Module["8a"]);
+				Module["8b"]["BorderSizePixel"] = 0;
+				Module["8b"]["BackgroundColor3"] = Color3.fromRGB(63, 63, 63);
+				Module["8b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Module["8b"]["Size"] = UDim2.new(0, 20, 0, 20);
+				Module["8b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+				Module["8b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["8b"]["Name"] = [[Background]];
+				Module["8b"]["BackgroundTransparency"] = 0.5;
+
+				Module["8c"] = Instance.new("UICorner", Module["8b"]);
+				Module["8c"]["CornerRadius"] = UDim.new(0, 4);
+
+				Module["8d"] = Instance.new("TextLabel", Module["8b"]);
+				Module["8d"]["BorderSizePixel"] = 0;
+				Module["8d"]["TextTransparency"] = 0.5;
+				Module["8d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["8d"]["TextSize"] = 10;
+				Module["8d"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+				Module["8d"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["8d"]["BackgroundTransparency"] = 1;
+				Module["8d"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Module["8d"]["Size"] = UDim2.new(0, 12, 0, 12);
+				Module["8d"]["Visible"] = false;
+				Module["8d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["8d"]["Text"] = [[R]];
+				Module["8d"]["Name"] = [[String]];
+				Module["8d"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Module["8e"] = Instance.new("UITextSizeConstraint", Module["8d"]);
+				Module["8e"]["MaxTextSize"] = 11;
+				Module["8e"]["MinTextSize"] = 11;
+
+				Module["8f"] = Instance.new("ImageLabel", Module["8b"]);
+				Module["8f"]["BorderSizePixel"] = 0;
+				Module["8f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["8f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Module["8f"]["Image"] = [[rbxassetid://122320675723624]];
+				Module["8f"]["Size"] = UDim2.new(0, 10, 0, 10);
+				Module["8f"]["Visible"] = false;
+				Module["8f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["8f"]["BackgroundTransparency"] = 1;
+				Module["8f"]["Name"] = [[Delete]];
+				Module["8f"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Module["90"] = Instance.new("ImageLabel", Module["8b"]);
+				Module["90"]["BorderSizePixel"] = 0;
+				Module["90"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["90"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Module["90"]["Image"] = [[rbxassetid://10734887784]];
+				Module["90"]["Size"] = UDim2.new(0, 10, 0, 10);
+				Module["90"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["90"]["BackgroundTransparency"] = 1;
+				Module["90"]["Name"] = [[Edit]];
+				Module["90"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				Module["91"] = Instance.new("TextLabel", Module["8a"]);
+				Module["91"]["TextWrapped"] = true;
+				Module["91"]["BorderSizePixel"] = 0;
+				Module["91"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Module["91"]["TextTransparency"] = 0.5;
+				Module["91"]["TextScaled"] = true;
+				Module["91"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["91"]["TextSize"] = 14;
+				Module["91"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+				Module["91"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Module["91"]["BackgroundTransparency"] = 1;
+				Module["91"]["AnchorPoint"] = Vector2.new(0, 0.5);
+				Module["91"]["Size"] = UDim2.new(0, 156, 0, 12);
+				Module["91"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+				Module["91"]["Text"] = options.name;
+				Module["91"]["Name"] = [[Title]];
+				Module["91"]["Position"] = UDim2.new(1, 0, 0.5, 0);
+
+				Module["92"] = Instance.new("UITextSizeConstraint", Module["91"]);
+				Module["92"]["MaxTextSize"] = 12;
+				Module["92"]["MinTextSize"] = 12
+
+				if Library.Flags[Module.flag] then
+					local Background_Tween = Ts:Create(Module["88"], TweenInfo.new(0.4), { ImageTransparency = 0.5 })
+						Background_Tween:Play()
+
+						local Rotate_Arrow = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = -90 })
+						Rotate_Arrow:Play()
+
+						local Size_Tween = Ts:Create(Module["5a"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 189) })
+						Size_Tween:Play()
+
+						Ts:Create(Module["5c"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 161) }):Play()
+					else
+						local Background_Tween = Ts:Create(Module["88"], TweenInfo.new(0.4), { ImageTransparency = 1 })
+						Background_Tween:Play()
+
+						local Rotate_Tween
+
+						if options.section == 'left' then
+							Rotate_Tween = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = 0 })
+						else
+							Rotate_Tween = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = -180 })
+						end
+
+						Rotate_Tween:Play()
+
+						local Size_Tween = Ts:Create(Module["5a"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 28) })
+						Size_Tween:Play()
+
+						Ts:Create(Module["5c"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 0) }):Play()
+					end
+
+				function Module:Toggle(state)
+
+					if Library.Flags[self.flag] == nil then
+						Library.Flags[self.flag] = false
+					end
+
+					if state == nil then
+						Library.Flags[self.flag] = not Library.Flags[self.flag]
+					else
+						Library.Flags[self.flag] = state
+					end
+
+					Library.save_flags()
+					options.callback(Library.Flags[self.flag])
+				end
+
+				if Library.Flags[Module.flag] == nil then
+    				Library.Flags[Module.flag] = false
+				end
+
+				Module:Toggle(Library.Flags[Module.flag])
+
+				if options.section == 'left' then
+					Module["89"].Rotation = 0
+				else
+					Module["89"].Rotation = -180
+				end
+
+				Module['88'].InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						if Module["5a"].Size == UDim2.new(0, 237, 0, 28) then
+
+							local Background_Tween = Ts:Create(Module["88"], TweenInfo.new(0.4), { ImageTransparency = 0.5 })
+							Background_Tween:Play()
+
+							local Rotate_Arrow = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = -90 })
+							Rotate_Arrow:Play()
+
+							local Size_Tween = Ts:Create(Module["5a"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 189) })
+							Size_Tween:Play()
+
+							Ts:Create(Module["5c"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 161) }):Play()
+						else
+							local Background_Tween = Ts:Create(Module["88"], TweenInfo.new(0.4), { ImageTransparency = 1 })
+							Background_Tween:Play()
+
+							local Rotate_Tween
+
+							if options.section == 'left' then
+								Rotate_Tween = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = 0 })
+							else
+								Rotate_Tween = Ts:Create(Module["89"], TweenInfo.new(0.4), { Rotation = -180 })
+							end
+
+							Rotate_Tween:Play()
+
+							local Size_Tween = Ts:Create(Module["5a"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 28) })
+							Size_Tween:Play()
+
+							Ts:Create(Module["5c"], TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 0) }):Play()
+						end
+
+						Module:Toggle()
+					end
+				end)
+
+				Module['78'].InputBegan:Connect(function(input, gpe)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						if Module['64'].Size == UDim2.new(0, 218, 0, 85) then
+							local rotateTween = Ts:Create(Module['79'], TweenInfo.new(0.4), { Rotation = 0 })
+							rotateTween:Play()
+
+							local sizeTween = Ts:Create(Module['64'], TweenInfo.new(0.4), { Size = UDim2.new(0, 218, 0, 0) })
+							sizeTween:Play()
+						else
+							local rotateTween = Ts:Create(Module['79'], TweenInfo.new(0.4), { Rotation = -90 })
+							rotateTween:Play()
+
+							local sizeTween = Ts:Create(Module['64'], TweenInfo.new(0.4), { Size = UDim2.new(0, 218, 0, 85) })
+							sizeTween:Play()
+						end
+					end
+				end)
+
+				function Section.Create_Slider(options)
+					local Slider = {
+						MouseDown = false,
+						Hover = false,
+						Connection = nil
+					}
+
+					Slider["3e"] = Instance.new("TextButton", Module["5c"]);
+					Slider["3e"]["BorderSizePixel"] = 0;
+					Slider["3e"]["AutoButtonColor"] = false;
+					Slider["3e"]["TextSize"] = 14;
+					Slider["3e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["3e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["3e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+					Slider["3e"]["Size"] = UDim2.new(0, 216, 0, 27);
+					Slider["3e"]["BackgroundTransparency"] = 1;
+					Slider["3e"]["Name"] = [[Slider]];
+					Slider["3e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["3e"]["Text"] = [[]];
+
+					Slider["3f"] = Instance.new("Frame", Slider["3e"]);
+					Slider["3f"]["BorderSizePixel"] = 0;
+					Slider["3f"]["BackgroundColor3"] = Color3.fromRGB(49, 49, 49);
+					Slider["3f"]["AnchorPoint"] = Vector2.new(0.5, 1);
+					Slider["3f"]["Size"] = UDim2.new(0, 217, 0, 4);
+					Slider["3f"]["Position"] = UDim2.new(0.5, 0, 0.8, 0);
+					Slider["3f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["3f"]["Name"] = [[Drag]];
+					Slider["3f"]["BackgroundTransparency"] = 0.5;
+
+					Slider["40"] = Instance.new("UICorner", Slider["3f"]);
+
+					Slider["41"] = Instance.new("Frame", Slider["3f"]);
+					Slider["41"]["BorderSizePixel"] = 0;
+					Slider["41"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["41"]["AnchorPoint"] = Vector2.new(0, 0.5);
+
+					local Percentage = (options.default - options.min) / (options.max - options.min)
+					Slider["41"].Size = UDim2.fromScale(Percentage, 1)
+
+					Slider["41"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["41"]["Name"] = [[Fill]];
+					Slider["41"]["BackgroundTransparency"] = 0.5;
+
+					Slider["42"] = Instance.new("UICorner", Slider["41"]);
+
+					Slider["43"] = Instance.new("Frame", Slider["41"]);
+					Slider["43"]["BorderSizePixel"] = 0;
+					Slider["43"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["43"]["AnchorPoint"] = Vector2.new(1, 0.5);
+					Slider["43"]["Size"] = UDim2.new(0, 6, 0, 6)
+
+					Slider["43"]["Position"] = UDim2.new(1, 0, 0.5, 0)
+
+					Slider["43"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["43"]["Name"] = [[Circle]];
+
+					Slider["44"] = Instance.new("UICorner", Slider["43"]);
+					Slider["44"]["CornerRadius"] = UDim.new(1, 0);
+
+					Slider["45"] = Instance.new("TextLabel", Slider["3e"]);
+					Slider["45"]["TextWrapped"] = true;
+					Slider["45"]["BorderSizePixel"] = 0;
+					Slider["45"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+					Slider["45"]["TextTransparency"] = 0.5;
+					Slider["45"]["TextScaled"] = true;
+					Slider["45"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["45"]["TextSize"] = 14;
+					Slider["45"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+					Slider["45"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["45"]["BackgroundTransparency"] = 1;
+					Slider["45"]["AnchorPoint"] = Vector2.new(0, 0.5);
+					Slider["45"]["Size"] = UDim2.new(0, 172, 0, 12);
+					Slider["45"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["45"]["Text"] = options.name
+					Slider["45"]["Name"] = [[Title]];
+					Slider["45"]["Position"] = UDim2.new(0, 0, 0.1, 0);
+
+					Slider["46"] = Instance.new("UITextSizeConstraint", Slider["45"]);
+					Slider["46"]["MaxTextSize"] = 12;
+					Slider["46"]["MinTextSize"] = 12;
+
+					Slider["47"] = Instance.new("TextLabel", Slider["3e"]);
+					Slider["47"]["TextWrapped"] = true;
+					Slider["47"]["BorderSizePixel"] = 0;
+					Slider["47"]["TextXAlignment"] = Enum.TextXAlignment.Right;
+					Slider["47"]["TextTransparency"] = 0.5;
+					Slider["47"]["TextScaled"] = true;
+					Slider["47"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["47"]["TextSize"] = 14;
+					Slider["47"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Medium, Enum.FontStyle.Normal);
+					Slider["47"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Slider["47"]["BackgroundTransparency"] = 1;
+					Slider["47"]["AnchorPoint"] = Vector2.new(1, 0.5);
+					Slider["47"]["Size"] = UDim2.new(0, 42, 0, 12);
+					Slider["47"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+					Slider["47"]["Text"] = options.default
+					Slider["47"]["Name"] = [[Value]];
+					Slider["47"]["Position"] = UDim2.new(1, 0, 0.4, 0);
+
+					Slider["48"] = Instance.new("UITextSizeConstraint", Slider["47"]);
+					Slider["48"]["MaxTextSize"] = 12;
+					Slider["48"]["MinTextSize"] = 12;
+
+					function Slider:SetValue(v)
+						if v == nil then
+
+							local Percentage = math.clamp((Mouse.X - Slider['3e'].AbsolutePosition.X) / (Slider['3e'].AbsoluteSize.X), 0, 1)
+							local Value = math.floor(((options.max - options.min) * Percentage) + options.min)
+
+							Slider['47'].Text = tostring(Value)
+							Slider["43"]["Position"] = UDim2.new(1, 0, 0.5, 0);
+
+							Slider["41"].Size = UDim2.fromScale(Percentage, 1)
+						else
+							Slider['47'].Text = tostring(v)
+							Slider['3f'].Size = UDim2.fromScale(((v - options.min) / (options.max - options.min)), 1)
+						end
+
+						options.callback(Slider:GetValue())
+					end
+
+					function Slider:GetValue()
+						return tonumber(Slider['47'].Text)
+					end
+
+					Slider['3e'].MouseEnter:Connect(function()
+						Slider.Hover = true
+					end)
+
+					Slider['3e'].MouseLeave:Connect(function()
+						Slider.Hover = false
+					end)
+
+					UserInputService.InputBegan:Connect(function(input, gpe)
+						if Slider.Hover then
+							if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+								Slider.MouseDown = true
+
+								if not Slider.Connection then
+									Slider.Connection = RunService.RenderStepped:Connect(function()
+										Slider:SetValue()
+									end)
+								end
+							end
+						end
+					end)
+
+					UserInputService.InputEnded:Connect(function(input, gpe)
+						if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+							Slider.MouseDown = false
+
+							if Slider.Connection then
+								Slider.Connection:Disconnect()
+							end
+
+							Slider.Connection = nil
+						end
+					end)
+
+					return Slider
+				end
+				return Module
+			end
+
+			return Section
+		end
+		return Tab
+	end
+	return Gui
+end
+
+
+local Is_Tweening = false
+
+UserInputService.InputBegan:Connect(function(Index, Value)
+    if not Value and Index.KeyCode == Enum.KeyCode.E and not Is_Mobile then
+
+        if Is_Tweening then
+            return
+        end
+
+        if getgenv().Toggle_Parry then
+            getgenv().Toggle_Parry = false
+        else
+            getgenv().Toggle_Parry = true
+        end
+
+        Library.Flags['Auto_Parry_Toggle'] = getgenv().Toggle_Parry
+
+        local CoreGui = CoreGui
+        local Container = CoreGui:FindFirstChild('Stream')
+
+        if not Container then
+            return
+        end
+
+        local LeftSection = Container:FindFirstChild('Container')
+
+        if not LeftSection then
+            return
+        end
+
+        local Module = LeftSection:FindFirstChild('Sections') and LeftSection.Sections:FindFirstChild('LeftSection') and LeftSection.Sections.LeftSection:FindFirstChild('Module')
+        local Header = Module and Module:FindFirstChild('Header')
+
+        local Arrow = Header and Header:FindFirstChild('Arrow')
+        local Settings = Module and Module:FindFirstChild('Settings')
+
+        if Module and Header and Arrow and Settings then
+            Is_Tweening = true
+
+            if Module.Size == UDim2.new(0, 237, 0, 28) then
+                local Background_Tween = Ts:Create(Header, TweenInfo.new(0.4), { ImageTransparency = 0.5 })
+                Background_Tween:Play()
+
+                local Rotate_Arrow = Ts:Create(Arrow, TweenInfo.new(0.4), { Rotation = -90 })
+                Rotate_Arrow:Play()
+
+                local Size_Tween = Ts:Create(Module, TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 189) })
+                Size_Tween:Play()
+
+                local Settings_Tween = Ts:Create(Settings, TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 161) })
+                Settings_Tween:Play()
+
+                Background_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Rotate_Arrow.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Size_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Settings_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+            else
+                -- Closing the menu (collapsing)
+                local Background_Tween = Ts:Create(Header, TweenInfo.new(0.4), { ImageTransparency = 1 })
+                Background_Tween:Play()
+
+                local Rotate_Arrow = Ts:Create(Arrow, TweenInfo.new(0.4), { Rotation = 0 })
+                Rotate_Arrow:Play()
+
+                local Size_Tween = Ts:Create(Module, TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 28) })
+                Size_Tween:Play()
+
+                local Settings_Tween = Ts:Create(Settings, TweenInfo.new(0.4), { Size = UDim2.new(0, 237, 0, 0) })
+                Settings_Tween:Play()
+
+                Background_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Rotate_Arrow.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Size_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+
+                Settings_Tween.Completed:Connect(function()
+                    Is_Tweening = false
+                end)
+            end
+        else
+            -- warn('One or more objects are missing from the UI structure.')
+        end
+    end
+end)
+
